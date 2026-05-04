@@ -1,5 +1,5 @@
 plugins {
-    id("net.fabricmc.fabric-loom")
+    id("net.fabricmc.fabric-loom-remap")
     id("io.github.dexman545.outlet")
 }
 
@@ -30,8 +30,8 @@ dependencies {
 //    modImplementation("net.fabricmc:fabric-loader:${outlet.loaderVersion()}")
 //    modImplementation("net.fabricmc.fabric-api:fabric-api:${outlet.fapiVersion()}")
     implementation("net.fabricmc:fabric-loader:0.18.4")
-    implementation("net.fabricmc.fabric-api:fabric-api:0.144.0+26.1")
-
+    implementation("net.fabricmc.fabric-api:fabric-api:0.92.8+1.20.1")
+    mappings(loom.officialMojangMappings())
     //
     // Kotlin libraries
     //
@@ -57,7 +57,7 @@ dependencies {
     //
     val usePermissions = properties["usePermissions"] as String == "true"
     if (usePermissions) {
-        implementation(include("me.lucko:fabric-permissions-api:0.7.0")!!)
+        implementation(include("me.lucko:fabric-permissions-api:0.3.3")!!)
     }
 
     //
@@ -67,9 +67,12 @@ dependencies {
 
     // Add all non-mod dependencies to the jar
     include("de.miraculixx:mc-commons:1.0.1")
-    transitiveInclude.resolvedConfiguration.resolvedArtifacts.forEach {
-        include(it.moduleVersion.id.toString())
-    }
+
+}
+
+afterEvaluate {  transitiveInclude.resolvedConfiguration.resolvedArtifacts.forEach {
+    it.moduleVersion.id.toString()
+}
 }
 
 tasks.processResources {

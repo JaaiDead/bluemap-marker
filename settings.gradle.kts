@@ -8,6 +8,8 @@ pluginManagement {
     }
 }
 
+/*
 include("bmm-paper")
+*/
 include("bmm-core")
 include("bmm-fabric")

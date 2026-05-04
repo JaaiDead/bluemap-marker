@@ -16,13 +16,12 @@
           </compositeBuild>
         </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="25" />
+        <option name="gradleJvm" value="temurin-21" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/bmm-core" />
             <option value="$PROJECT_DIR$/bmm-fabric" />
-            <option value="$PROJECT_DIR$/bmm-paper" />
             <option value="$PROJECT_DIR$/buildSrc" />
           </set>
         </option>
