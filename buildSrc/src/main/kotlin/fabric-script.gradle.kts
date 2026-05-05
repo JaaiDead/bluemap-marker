@@ -36,20 +36,22 @@ dependencies {
     // Kotlin libraries
     //
     val flkVersion = outlet.latestModrinthModVersion("fabric-language-kotlin", outlet.mcVersions())
-    implementation("net.fabricmc:fabric-language-kotlin:$flkVersion")
+    modImplementation("net.fabricmc:fabric-language-kotlin:$flkVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.+")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.+")
     implementation(include("net.kyori:adventure-platform-fabric:${properties["adventureVersion"]}")!!)
+
+    // Do not change the adventure to modimplementaion already in moyangs namespace.
 
     //
     // Silk configuration (optional)
     //
     val silkVersion = properties["silkVersion"] as String
     println("Silk: $silkVersion")
-    implementation("net.silkmc:silk-core:$silkVersion")
-    implementation("net.silkmc:silk-commands:$silkVersion")
-    implementation("net.silkmc:silk-nbt:$silkVersion")
-    implementation("net.silkmc:silk-network:$silkVersion")
+    modImplementation("net.silkmc:silk-core:$silkVersion")
+    modImplementation("net.silkmc:silk-commands:$silkVersion")
+    modImplementation("net.silkmc:silk-nbt:$silkVersion")
+    modImplementation("net.silkmc:silk-network:$silkVersion")
 
 
     //
@@ -57,7 +59,7 @@ dependencies {
     //
     val usePermissions = properties["usePermissions"] as String == "true"
     if (usePermissions) {
-        implementation(include("me.lucko:fabric-permissions-api:0.3.3")!!)
+        modImplementation(include("me.lucko:fabric-permissions-api:0.3.3")!!)
     }
 
     //
