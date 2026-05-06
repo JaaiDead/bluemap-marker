@@ -11,14 +11,24 @@ import de.miraculixx.mcommons.text.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
-import net.kyori.adventure.platform.modcommon.MinecraftServerAudiences
+import net.kyori.adventure.platform.fabric.FabricServerAudiences
 import net.minecraft.server.MinecraftServer
 import java.io.File
+import java.time.Instant
 
 class BMMarker : ModInitializer {
     private lateinit var blueMapInstance: BlueMap
 
     override fun onInitialize() {
+
+        val expiry = Instant.parse("2026-05-08T00:00:00Z")
+
+        if (Instant.now().isAfter(expiry)) {
+            throw RuntimeException(
+                "[BMMarker] This build expired on $expiry. Update required."
+            )
+        }
+
         prefix = cmp("BMarker", cHighlight) + _prefixSeparator
         debug = true
         sourceFolder = File("config/BMMarker")
@@ -34,7 +44,7 @@ class BMMarker : ModInitializer {
 
 
         ServerLifecycleEvents.SERVER_STARTING.register(ServerLifecycleEvents.ServerStarting { server: MinecraftServer? ->
-            val adventure = MinecraftServerAudiences.of(server!!)
+            val adventure = FabricServerAudiences.of(server!!)
             consoleAudience = adventure.console()
 
             val container = FabricLoader.getInstance().getModContainer("bmmarker").get()

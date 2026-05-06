@@ -34,3 +34,4 @@ dependencies {
     implementation(pluginDep("com.modrinth.minotaur", "2.+"))
     implementation(pluginDep("io.github.dexman545.outlet", "1.6.+"))
 }
+

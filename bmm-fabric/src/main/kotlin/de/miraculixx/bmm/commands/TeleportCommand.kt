@@ -6,7 +6,10 @@ import de.miraculixx.bmm.utils.data.teleportCommand
 import de.miraculixx.bmm.utils.data.teleportCommandOthers
 import de.miraculixx.bmm.utils.data.teleportCommandPrefix
 import de.miraculixx.bmm.utils.enums.MarkerArg
+import de.miraculixx.mcommons.text.consoleAudience
 import me.lucko.fabric.api.permissions.v0.Permissions
+import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.audience.Audience.audience
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.commands.ArgumentCommandBuilder
@@ -24,7 +27,7 @@ class TeleportCommand : TeleportCommandInstance {
             suggestAllMarkerIDs()
             runs {
                 val player = source.player ?: return@runs
-                val pos = source.resolveMarker(marker(), player.getMapIDs(), player.uuid, Permissions.require(teleportCommandOthers, 3).test(source)) ?: return@runs
+                val pos = audience().resolveMarker(marker(), player.getMapIDs(), player.uuid, Permissions.require(teleportCommandOthers, 3).test(source)) ?: return@runs
                 player.teleportTo(pos.x, pos.y, pos.z)
             }
         }

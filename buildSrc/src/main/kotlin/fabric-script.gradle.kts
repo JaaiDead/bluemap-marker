@@ -29,18 +29,22 @@ dependencies {
 //    println("FabricLoader: " + outlet.loaderVersion() + " " + outlet.fapiVersion())
 //    modImplementation("net.fabricmc:fabric-loader:${outlet.loaderVersion()}")
 //    modImplementation("net.fabricmc.fabric-api:fabric-api:${outlet.fapiVersion()}")
-    implementation("net.fabricmc:fabric-loader:0.18.4")
-    implementation("net.fabricmc.fabric-api:fabric-api:0.92.8+1.20.1")
+    modImplementation("net.fabricmc:fabric-loader:0.18.4"){
+        exclude(group = "net.fabricmc.fabric-api")
+    }
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.8+1.20.1")
     mappings(loom.officialMojangMappings())
     //
     // Kotlin libraries
     //
     val flkVersion = outlet.latestModrinthModVersion("fabric-language-kotlin", outlet.mcVersions())
-    modImplementation("net.fabricmc:fabric-language-kotlin:$flkVersion")
+    modImplementation("net.fabricmc:fabric-language-kotlin:$flkVersion"){
+        exclude(group = "net.fabricmc.fabric-api")
+    }
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.+")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.+")
-    implementation(include("net.kyori:adventure-platform-fabric:${properties["adventureVersion"]}")!!)
-
+    modImplementation("net.kyori:adventure-platform-fabric:${properties["adventureVersion"]}")
+    include("net.kyori:adventure-platform-fabric:${properties["adventureVersion"]}")
     // Do not change the adventure to modimplementaion already in moyangs namespace.
 
     //
@@ -48,10 +52,18 @@ dependencies {
     //
     val silkVersion = properties["silkVersion"] as String
     println("Silk: $silkVersion")
-    modImplementation("net.silkmc:silk-core:$silkVersion")
-    modImplementation("net.silkmc:silk-commands:$silkVersion")
-    modImplementation("net.silkmc:silk-nbt:$silkVersion")
-    modImplementation("net.silkmc:silk-network:$silkVersion")
+    modImplementation("net.silkmc:silk-core:$silkVersion"){
+        exclude(group = "net.fabricmc.fabric-api")
+    }
+    modImplementation("net.silkmc:silk-commands:$silkVersion"){
+        exclude(group = "net.fabricmc.fabric-api")
+    }
+    modImplementation("net.silkmc:silk-nbt:$silkVersion"){
+        exclude(group = "net.fabricmc.fabric-api")
+    }
+    modImplementation("net.silkmc:silk-network:$silkVersion"){
+        exclude(group = "net.fabricmc.fabric-api")
+    }
 
 
     //
@@ -59,7 +71,10 @@ dependencies {
     //
     val usePermissions = properties["usePermissions"] as String == "true"
     if (usePermissions) {
-        modImplementation(include("me.lucko:fabric-permissions-api:0.3.3")!!)
+        modImplementation("me.lucko:fabric-permissions-api:0.3.3"){
+            exclude(group = "net.fabricmc.fabric-api")
+        }
+        include("me.lucko:fabric-permissions-api:0.3.3")
     }
 
     //
@@ -70,11 +85,6 @@ dependencies {
     // Add all non-mod dependencies to the jar
     include("de.miraculixx:mc-commons:1.0.1")
 
-}
-
-afterEvaluate {  transitiveInclude.resolvedConfiguration.resolvedArtifacts.forEach {
-    it.moduleVersion.id.toString()
-}
 }
 
 tasks.processResources {

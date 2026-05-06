@@ -7,6 +7,7 @@ import de.miraculixx.bmm.utils.data.manageSettings
 import de.miraculixx.bmm.utils.data.settingsCommandPrefix
 import de.miraculixx.bmm.utils.settings
 import me.lucko.fabric.api.permissions.v0.Permissions
+import net.kyori.adventure.audience.Audience
 import net.minecraft.commands.CommandSourceStack
 import net.silkmc.silk.commands.LiteralCommandBuilder
 import net.silkmc.silk.commands.command
@@ -21,13 +22,13 @@ class SettingsCommand : SettingsCommandInterface {
 
         literal("convert") {
             literal("oldBMarkers") {
-                runsAsync { convertOldMarkers(source, File("config")) }
+                runsAsync { convertOldMarkers(source as Audience, File("config")) }
             }
             literal("bluemapMarkers") {
                 argument<String>("map", StringArgumentType.word()) { map ->
                     suggestList { MarkerManager.blueMapMaps.keys }
                     runsAsync {
-                        convertIntegratedMarkers(source, File("config"), map())
+                        convertIntegratedMarkers(source as Audience, File("config"), map())
                         source.server.executeCommand("bluemap reload")
                     }
                 }
@@ -43,23 +44,23 @@ class SettingsCommand : SettingsCommandInterface {
         literal("config") {
             literal("save") {
                 runsAsync {
-                    configSave(source)
+                    configSave(source as Audience)
                 }
             }
             literal("load") {
                 runsAsync {
-                    configLoad(source, true)
+                    configLoad(source as Audience, true)
                 }
             }
         }
     }
 
     private fun LiteralCommandBuilder<CommandSourceStack>.intSetting(name: String, get: () -> Int, set: (Int) -> Unit) = literal(name) {
-        runs { sendCurrentInfo(source, get().toString()) }
+        runs { sendCurrentInfo(source as Audience, get().toString()) }
         argument<Int>("new-value", IntegerArgumentType.integer(-1)) { value ->
             runs {
                 set(value())
-                sendChangedInfo(source, get().toString())
+                sendChangedInfo(source as Audience, get().toString())
             }
         }
     }

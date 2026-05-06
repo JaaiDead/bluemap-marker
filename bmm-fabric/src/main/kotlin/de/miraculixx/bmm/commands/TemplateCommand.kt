@@ -14,6 +14,7 @@ import de.miraculixx.bmm.utils.enums.MarkerArg
 import de.miraculixx.bmm.utils.locale
 import de.miraculixx.mcommons.text.*
 import me.lucko.fabric.api.permissions.v0.Permissions
+import net.kyori.adventure.audience.Audience.audience
 import net.minecraft.commands.CommandSourceStack
 import net.silkmc.silk.commands.LiteralCommandBuilder
 import net.silkmc.silk.commands.command
@@ -35,19 +36,19 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
 
         literal("help") {
             runsAsync {
-                source.sendMessage(prefix + locale.msg("command.template.help"))
+                audience().sendMessage(prefix + locale.msg("command.template.help"))
             }
         }
 
         literal("create") {
             argument<String>("name") { setID ->
                 runsAsync {
-                    val newSet = source.createNewSet(setID(), false) ?: return@runsAsync
+                    val newSet = audience().createNewSet(setID(), false) ?: return@runsAsync
                     templateCommands[setID()] = TemplateCommandImplementation(newSet)
                 }
                 argument<Boolean>("needsPermission", BoolArgumentType.bool()) { needsPermission ->
                     runsAsync {
-                        val newSet = source.createNewSet(setID(), needsPermission()) ?: return@runsAsync
+                        val newSet = audience().createNewSet(setID(), needsPermission()) ?: return@runsAsync
                         templateCommands[setID()] = TemplateCommandImplementation(newSet)
                     }
                 }
@@ -56,11 +57,11 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
 
         literal("delete") {
             argument<String>("name", StringArgumentType.string()) { id ->
-                runsAsync { source.deleteSet(id(), false) }
+                runsAsync { audience().deleteSet(id(), false) }
                 suggestList { templateCommands.keys }
                 argument<Boolean>("confirm", BoolArgumentType.bool()) { confirm ->
                     runsAsync {
-                        if (source.deleteSet(id(), confirm())) templateCommands.remove(id())?.unregister()
+                        if (audience().deleteSet(id(), confirm())) templateCommands.remove(id())?.unregister()
                     }
                 }
             }
@@ -88,7 +89,7 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
                     literal("label") {
                         argument<String>("label", StringArgumentType.greedyString()) { label ->
                             runsAsync {
-                                source.setSetArg(templateSet, MarkerArg.LABEL, Box.BoxString(label()))
+                                audience().setSetArg(templateSet, MarkerArg.LABEL, Box.BoxString(label()))
                             }
                         }
                     }
@@ -97,24 +98,24 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
                 }
                 literal("markers") {
                     literal("help") {
-                        runsAsync { source.sendMessage(locale.msg("command.template.help-marker")) }
+                        runsAsync { audience().sendMessage(locale.msg("command.template.help-marker")) }
                     }
                     literal("add-template") {
                         argument<String>("type", StringArgumentType.word()) { type ->
                             suggestList { listOf("poi", "line", "shape", "extrude", "ellipse") }
-                            runsAsync { source.addMarkerTemplate(source.textName, templateSet, type()) }
+                            runsAsync { audience().addMarkerTemplate(source.textName, templateSet, type()) }
                         }
                     }
                     literal("remove-template") {
                         argument<String>("id", StringArgumentType.string()) { id ->
                             suggestList { templateSet.templateMarker.keys }
-                            runsAsync { source.removeMarkerTemplate(templateSet, id()) }
+                            runsAsync { audience().removeMarkerTemplate(templateSet, id()) }
                         }
                     }
                     literal("edit-template") {
                         argument<String>("id", StringArgumentType.string()) { id ->
                             suggestList { templateSet.templateMarker.keys }
-                            runsAsync { source.editMarkerTemplate(source.textName, id(), templateSet) }
+                            runsAsync { audience().editMarkerTemplate(source.textName, id(), templateSet) }
                         }
                     }
                 }
@@ -122,19 +123,19 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
                     argument<Int>("amount", IntegerArgumentType.integer(-1)) { amount ->
                         runsAsync {
                             templateSet.maxMarkerPerPlayer = amount()
-                            source.sendMessage(prefix + locale.msg("command.template.setArg", listOf(amount().toString())))
+                            audience().sendMessage(prefix + locale.msg("command.template.setArg", listOf(amount().toString())))
                         }
                     }
                 }
                 literal("maps") {
                     literal("add") {
                         argument<String>("map", StringArgumentType.string()) { map ->
-                            runsAsync { source.addMap(templateSet, map()) }
+                            runsAsync { audience().addMap(templateSet, map()) }
                         }
                     }
                     literal("remove") {
                         argument<String>("map", StringArgumentType.string()) { map ->
-                            runsAsync { source.removeMap(templateSet, map()) }
+                            runsAsync { audience().removeMap(templateSet, map()) }
                         }
                     }
                 }
@@ -150,7 +151,7 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
                             val position = player.position().let { Vector3d(it.x, it.y, it.z) }
                             val entry = MarkerTemplateEntry(template(), player.scoreboardName, name().replace(' ', '_'), position)
                             val bypass = Permissions.require(managePermission, 3).test(source)
-                            player.placeMarker(entry, templateSet, bypass, player.world)
+                            audience().placeMarker(entry, templateSet, bypass, player.world)
                         }
                     }
                 }
@@ -167,7 +168,7 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
                     }
                     runsAsync {
                         val bypass = Permissions.require(managePermission, 3).test(source)
-                        source.unplaceMarker(templateSet, name(), bypass, source.textName)
+                        audience().unplaceMarker(templateSet, name(), bypass, source.textName)
                     }
                 }
             }
@@ -181,7 +182,7 @@ class TemplateCommand : TemplateCommandInterface, TemplateSetLoader {
         private fun LiteralCommandBuilder<CommandSourceStack>.applySetArgumentBool(name: String, arg: MarkerArg) {
             literal(name) {
                 argument<Boolean>(name, BoolArgumentType.bool()) { name ->
-                    runsAsync { source.setSetArg(templateSet, arg, Box.BoxBoolean(name())) }
+                    runsAsync { audience().setSetArg(templateSet, arg, Box.BoxBoolean(name())) }
                 }
             }
         }
