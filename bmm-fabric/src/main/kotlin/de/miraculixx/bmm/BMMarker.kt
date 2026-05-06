@@ -21,13 +21,6 @@ class BMMarker : ModInitializer {
 
     override fun onInitialize() {
 
-        val expiry = Instant.parse("2026-05-08T00:00:00Z")
-
-        if (Instant.now().isAfter(expiry)) {
-            throw RuntimeException(
-                "[BMMarker] This build expired on $expiry. Update required."
-            )
-        }
 
         prefix = cmp("BMarker", cHighlight) + _prefixSeparator
         debug = true
@@ -43,19 +36,34 @@ class BMMarker : ModInitializer {
         MarkerManager.loadTemplates(null)
 
 
-        ServerLifecycleEvents.SERVER_STARTING.register(ServerLifecycleEvents.ServerStarting { server: MinecraftServer? ->
-            val adventure = FabricServerAudiences.of(server!!)
+        ServerLifecycleEvents.SERVER_STARTED.register { server ->
+
+            val adventure = FabricServerAudiences.of(server)
             consoleAudience = adventure.console()
 
-            val container = FabricLoader.getInstance().getModContainer("bmmarker").get()
-            blueMapInstance = BlueMap(container.metadata.version.friendlyString.toIntOrNull() ?: 0, true)
-        })
+            val container = FabricLoader
+                .getInstance()
+                .getModContainer("bmmarker")
+                .get()
 
-        ServerLifecycleEvents.SERVER_STOPPED.register(ServerLifecycleEvents.ServerStopped {
-            blueMapInstance.disable()
+            blueMapInstance = BlueMap(
+                container.metadata.version.friendlyString.toIntOrNull() ?: 0,
+                true
+            )
+        }
+
+        ServerLifecycleEvents.SERVER_STOPPED.register {
+
+            blueMapInstance?.disable()
+
             if (MarkerManager.blueMapAPI?.let { MarkerManager.save(it) } != null)
-                consoleAudience.sendMessage(prefix + cmp("Successfully saved all data! Good Bye :)"))
-            else consoleAudience.sendMessage(prefix + cmp("Failed to save data!", cError))
-        })
+                consoleAudience.sendMessage(
+                    prefix + cmp("Successfully saved all data! Good Bye :)")
+                )
+            else
+                consoleAudience.sendMessage(
+                    prefix + cmp("Failed to save data!", cError)
+                )
+        }
     }
 }

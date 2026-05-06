@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation("org.yaml:snakeyaml:2.5")
-    implementation("de.bluecolored:bluemap-api:2.7.6")
+    implementation("de.bluecolored.bluemap:BlueMapAPI:2.7.2")
     implementation("de.miraculixx:mc-commons:1.0.1")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.+")
@@ -21,20 +21,20 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 tasks {
     compileJava {
         options.encoding = "UTF-8"
-        options.release.set(25)
+        options.release.set(17)
     }
     // configure Kotlin compile tasks with the new compilerOptions DSL
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile::class.java).configureEach {
         compilerOptions {
             // set JVM target to 21 to match the Java toolchain/release
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
 }

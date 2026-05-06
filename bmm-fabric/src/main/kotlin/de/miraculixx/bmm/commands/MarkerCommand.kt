@@ -534,6 +534,6 @@ class MarkerCommand : MarkerCommandInstance {
     }
 
     private fun CommandSourceStack.getWorldKeys(): List<String> {
-        return server.allLevels.map { it.dimension().location().toString() }
+        return server.levelKeys().map { it.location().toString() }
     }
 }

@@ -80,8 +80,8 @@ dependencies {
     //
     // Configuration
     //
-    transitiveInclude(implementation("org.yaml:snakeyaml:2.5")!!)
-
+    //transitiveInclude(implementation("org.yaml:snakeyaml:2.5")!!)
+    include("org.yaml:snakeyaml:2.5")
     // Add all non-mod dependencies to the jar
     include("de.miraculixx:mc-commons:1.0.1")
 

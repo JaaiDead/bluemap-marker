@@ -18,7 +18,8 @@ object CommandHelper {
         suggestListWithTooltipsSuspending {
             val api = MarkerManager.blueMapAPI
             MarkerManager.blueMapMaps.map { (mapID, _) ->
-                mapID to literalText(api?.getMap(mapID)?.getOrNull()?.name ?: "Unknown") { color = 0x6e94ff }
+                val map = api?.maps?.firstOrNull { it.id.equals(mapID, ignoreCase = true) }
+                mapID to literalText(map?.name ?: "Unknown") { color = 0x6e94ff }
             }
         }
     }
